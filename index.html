@@ -20,34 +20,62 @@
     <div class="flex flex-col justify-between sm:flex-row  sm:items-center mx-auto gap-3 w-full h-full ">
 		<div class="flex flex-col gap-3 w-full h-full">
 		
-			<section class="bg-[#213743] flex flex-row justify-between items-center rounded-2xl p-4">
-				<div class="flex items-center space-x-3">
-					<span class="material-icons text-white text-4xl" aria-hidden="true">account_circle</span>
-					<div>
-						<p class="text-xl font-semibold select-text" id="userName">Username123</p>
+			<section class="bg-[#213743] rounded-xl p-4">
+				<div class="hidden flex flex-row items-center space-x-3 justify-between" id= "accountInfo">
+					<div class="flex items-center space-x-3">
+						<span class="material-icons text-white text-4xl" aria-hidden="true">account_circle</span>
+						<div>
+							<p class="text-xl font-semibold select-text" id="userName">Username123</p>
+						</div>
+					</div>
+					<div class="flex items-center space-x-2 text-white text-sm select-text">
+						<span class="material-icons" aria-hidden="true">info</span>
+						<p id="userInfo" >Member since Jan 2023</p>
 					</div>
 				</div>
-				<div class="flex items-center space-x-2 text-white text-sm select-text">
-					<span class="material-icons" aria-hidden="true">info</span>
-					<p id="userInfo" >Member since Jan 2023</p>
+				<div class=" flex flex-col space-x-3 w-full" id= "accountApi">
+				<label class="font-semibold ml-1 mb-1" for="bet-amount">Api Key:</label>
+				<form id="accountForm" class=" flex gap-3 flex-wrap w-full">
+					<input
+						type="text"
+						id="apiKeyInput"
+						placeholder="Enter API Key (96 characters)"
+						class="flex-grow rounded-md bg-[#0f212e] text-white font-mono font-semibold text-sm px-3 py-2 outline-none"
+						required
+					/>
+					<button 
+						type="submit"
+						class="bg-[#00c73c] rounded-2xl px-3 py-2 font-semibold text-black items-center text-sm hover:bg-[#00e33c] ">Connect</i>
+					</button>
+				</form>
+				<p id="accountErrorMsg" class="text-red-500 hidden mt-3 text-xs text-center font-mono">text</p>
 				</div>
 			</section>
-			<section class="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center rounded-2xl gap-3  ">
+			<section class="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center rounded-xl gap-3  ">
 				<div class="bg-[#0f212e] rounded-xl p-3 h-full w-full">
 					<div  class="flex flex-row gap-1" >
 						<p class="material-icons text-green-400 text-sm" aria-hidden="true">account_balance_wallet</p>
-						<p class="text-white text-sm">Balance&nbsp;:</p>
-						<p class="text-white text-sm" id="Balance">...</p>
+						<span class="flex flex-row justify-between text-sm w-full ">
+							<p class="text-white text-sm">Balance&nbsp;:</p>
+							<p class="text-white text-sm" id="Balance"></p>
+							<p class="text-white text-sm" id="BalancePercent"></p>
+						</span>
 					</div>
 					<div  class="flex flex-row gap-1" >
 						<p class="material-icons text-green-400 text-sm" aria-hidden="true">trending_up</p>	
-						<p class="text-white text-sm">Profit&nbsp;&nbsp;:</p>
-						<p class="text-white text-sm" id="Profit">...</p>
+						<span class="flex flex-row justify-between text-sm w-full ">
+							<p class="text-white ">Profit&nbsp;&nbsp;:</p>
+							<p class="text-white " id="Profit"></p>
+							<p class="text-white" id="ProfitPercent"></p>
+						</span>
 					</div>
 					<div  class="flex flex-row gap-1" >
 						<p class="material-icons text-green-400 text-sm" aria-hidden="true">casino</p>
-						<p class="text-white text-sm">Wagered&nbsp;:</p>
-						<p class="text-white text-sm" id="Wagered">...</p>
+						<span class="flex flex-row justify-between text-sm w-full ">
+							<p class="text-white">Wagered :</p>
+							<p class="text-white" id="Wagered"></p>
+							<p class="text-white" id="WageredPercent"></p>
+						</span>
 					</div>
 				</div>	
 				<div class="bg-[#0f212e] rounded-xl p-3 h-full w-full">
@@ -104,13 +132,15 @@
 				<div class="bg-[#213743] rounded-xl p-3 w-full">
 					<h3 class="text-sm sm:text-sm">Bet Results:</h3>
 					<pre id="bet-results" class="whitespace-pre-wrap text-sm sm:text-xs ">[]</pre>
-				</div>			
+				</div>	
+				<div class="hidden bg-[#0f212e] border-3 border-[#00e33c] rounded-xl  p-3 justify-center items-center text-[#00ff3c] font-semibold text-xl font-bold" id="payoutShow">1.60×
+				</div>
 
 		</section> 
 		<section class="space-y-3 gap-3 w-full">
 		<div class="absolute-y-3 gap-3 w-full">
 			<div class="px-2 py-2 lg:px-4 lg:py-4 grid grid-cols-8 gap-3 bg-[#0f212e] rounded-xl w-full" id="number-grid"></div>
-			<div class="hidden absolute shadow-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f212e] border-3 border-[#00e33c] rounded-xl aspect-[1/1] px-2 py-2 lg:px-4 lg:py-4 justify-center items-center text-[#00ff3c] font-semibold select-none text-xl font-bold" id="payoutShow">1.60×</div>
+			<div class="hidden absolute shadow-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f212e] border-3 border-[#00e33c] rounded-xl aspect-[1/1] px-2 py-2 lg:px-4 lg:py-4 justify-center items-center text-[#00ff3c] font-semibold select-none text-xl font-bold" id="payoutShow2">1.60×</div>
 			</div>
 		</section>
     </div>
