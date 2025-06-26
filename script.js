@@ -709,7 +709,7 @@ function callRandomFunction(minSize,maxSize) {
 		case generateGaussian:
 			return selectedFunction(minSize,maxSize); 
 		default:
-			return generateLCG(minSize,maxSize); 
+			//return generateLCG(minSize,maxSize); 
 	}
 }
 // TESTING - Run each method and print results
