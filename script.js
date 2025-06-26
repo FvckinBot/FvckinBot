@@ -7,6 +7,7 @@ let ticket  = {
 	percent:0,
 }
 let isLogin = false;
+let useRandom = false
 let isRunning = false
 let alwaysReset = true
 
@@ -707,9 +708,7 @@ function callRandomFunction(minSize,maxSize) {
 		case generateBinaryFind:
 			return selectedFunction(minSize,maxSize); 
 		case generateGaussian:
-			return selectedFunction(minSize,maxSize); 
-		default:
-			//return generateLCG(minSize,maxSize); 
+			return selectedFunction(minSize,maxSize);  
 	}
 }
 // TESTING - Run each method and print results
@@ -718,7 +717,8 @@ async function autoPick() {
 	console.log(maxBox)
 	console.log(maxSelected)
 	console.log(picked)
-	selectedNumbers = callRandomFunction(picked, maxBox)
+	const newSelect = callRandomFunction(picked, maxBox)
+	if(newSelect.length) selectedNumbers = newSelect
 	console.log(selectedNumbers)
 	selectedNumbers.sort((a, b) => a - b);
 	if(!isRunning) luaCode.update.selection(selectedNumbers)
