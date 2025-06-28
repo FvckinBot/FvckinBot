@@ -158,15 +158,34 @@
             display: none;
         }
 
-        .qr-code {
-            width: 200px;
-            height: 200px;
+        .url-input-container {
+            margin: 0 auto 15px;
+            width: 100%;
+        }
+
+        #url-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--tg-theme-hint-color);
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-size: 16px;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 300px;
             margin: 20px auto;
             background-color: var(--tg-theme-secondary-bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -191,7 +210,7 @@
         <div class="card">
             <div class="user-info">
                 <div class="avatar">
-                    <img src="https://placehold.co/60x60" alt="User profile picture showing abstract avatar with Telegram colors" />
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ded32c51-079d-44fa-aa32-dba978dfed35.png" alt="User profile picture showing abstract avatar with Telegram colors" />
                 </div>
                 <div class="user-details">
                     <div class="user-name" id="user-name">Loading...</div>
@@ -232,11 +251,14 @@
         </div>
 
         <div class="card">
-            <h2>QR Code Generator</h2>
-            <div class="qr-code" id="qr-code">
-                <img src="https://placehold.co/200x200" alt="QR code placeholder that will be generated with user data" />
+            <h2>Web Page Loader</h2>
+            <div class="url-input-container">
+                <input type="url" id="url-input" placeholder="Enter URL (e.g. https://example.com)">
             </div>
-            <button class="btn" id="generate-qr">Generate QR Code</button>
+            <div class="iframe-container" id="iframe-container">
+                <iframe src="about:blank" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <button class="btn" id="launch-url">Load URL</button>
         </div>
 
         <button class="btn" id="send-data">Send Data to Bot</button>
@@ -251,9 +273,11 @@
         tg.expand();
 
         // Get user data
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('user-name').textContent = user?.first_name || 'Anonymous';
-        document.getElementById('user-id').textContent = `ID: ${user?.id || 'N/A'}`;
+        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        const userName = user ? (user.first_name || 'Anonymous') : 'Anonymous';
+        const userId = user ? (user.id || 'N/A') : 'N/A';
+        document.getElementById('user-name').textContent = userName;
+        document.getElementById('user-id').textContent = `ID: ${userId}`;
 
         // Theme buttons functionality
         document.getElementById('light-theme').addEventListener('click', () => {
@@ -281,26 +305,38 @@
 
         // Send data to bot
         document.getElementById('send-data').addEventListener('click', () => {
-            const data = {
-                user_id: user?.id,
-                first_name: user?.first_name,
-                last_name: user?.last_name,
-                username: user?.username,
-                language_code: user?.language_code,
-                is_premium: user?.is_premium,
-                query_id: tg.initDataUnsafe.query_id,
-            };
+            const data = {};
+            if (user) {
+                data.user_id = user.id;
+                data.first_name = user.first_name;
+                data.last_name = user.last_name;
+                data.username = user.username;
+                data.language_code = user.language_code;
+                data.is_premium = user.is_premium;
+            }
+            data.query_id = tg.initDataUnsafe ? tg.initDataUnsafe.query_id : null;
             
             tg.sendData(JSON.stringify(data));
         });
 
-        // Generate QR code (simulated)
-        document.getElementById('generate-qr').addEventListener('click', () => {
-            const qrCode = document.getElementById('qr-code');
-            qrCode.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`tg://user?id=${user?.id}`)}" alt="QR code for Telegram user ID ${user?.id}" />`;
+        // Launch URL in iframe
+        document.getElementById('launch-url').addEventListener('click', () => {
+            const urlInput = document.getElementById('url-input');
+            const iframeContainer = document.getElementById('iframe-container');
+            const iframe = iframeContainer.querySelector('iframe');
             
-            // Show notification
-            tg.showAlert(`QR code generated for user ${user?.first_name || 'Anonymous'}`);
+            if (!urlInput.value) {
+                tg.showAlert('Please enter a URL first');
+                return;
+            }
+            
+            try {
+                const url = new URL(urlInput.value);
+                iframe.src = url.toString();
+                tg.showAlert('URL loaded successfully');
+            } catch (e) {
+                tg.showAlert('Invalid URL format. Please include http:// or https://');
+            }
         });
 
         // Handle theme changes
