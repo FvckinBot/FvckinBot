@@ -187,6 +187,25 @@
             height: 100%;
             border: none;
         }
+        
+        .iframe-error {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--tg-theme-secondary-bg-color);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .iframe-error p {
+            margin-bottom: 15px;
+        }
 
         @media (prefers-color-scheme: dark) {
             :root {
@@ -257,6 +276,10 @@
             </div>
             <div class="iframe-container" id="iframe-container">
                 <iframe src="about:blank" frameborder="0" allowfullscreen></iframe>
+                <div class="iframe-error hidden" id="iframe-error">
+                    <p>Could not load page. Try opening in browser instead.</p>
+                    <button class="btn btn-secondary" id="open-in-browser">Open in Browser</button>
+                </div>
             </div>
             <button class="btn" id="launch-url">Load URL</button>
         </div>
@@ -332,8 +355,25 @@
             
             try {
                 const url = new URL(urlInput.value);
+                const errorDisplay = document.getElementById('iframe-error');
+                errorDisplay.classList.add('hidden');
+                
+                iframe.onload = function() {
+                    errorDisplay.classList.add('hidden');
+                };
+                
+                iframe.onerror = function() {
+                    errorDisplay.classList.remove('hidden');
+                    tg.showAlert('Could not load page in iframe');
+                };
+                
                 iframe.src = url.toString();
-                tg.showAlert('URL loaded successfully');
+                
+                // Store URL for browser fallback
+                document.getElementById('open-in-browser').onclick = () => {
+                    window.open(url.toString(), '_blank');
+                };
+                
             } catch (e) {
                 tg.showAlert('Invalid URL format. Please include http:// or https://');
             }
