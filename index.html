@@ -1,408 +1,457 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-hint-color: #707579;
-            --tg-theme-link-color: #3390ec;
-            --tg-theme-button-color: #3390ec;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #f4f4f5;
-        }
+	<head>
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1" name="viewport"/>
+		<title>FvckinBot™ Keno</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+	</head>
+	<body class="bg-gradient-to-tr from-lime-300 to-gray-950 text-white pt-20 sm:pt-24 min-h-screen">  
+		<header class="flex justify-between items-center rounded-b-2xl border-b border-lime-300/75 fixed w-full top-0 z-50 p-5 header-gradient backdrop-blur-sm">
+			<div class="flex items-center space-x-2 sm:space-x-4">
+				<h1 id="popupTitle" class="text-transparent bg-clip-text bg-gradient-to-r from-white to-lime-300 text-base sm:text-2xl font-bold font-mono tracking-tighter">
+					<span id="botName">FvckinBot™ </span> <span class="text-xs align-end" id="versionBot">v2.1.3</span>
+				</h1>
+			</div>
+			
+			<div id="casinoSite" class="flex items-center space-x-2">
+				<span class="hidden sm:inline text-gray-400 text-xs">Connected to:</span>
+				<div class="relative">
+					<div class="site-badge px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-gray-950-900 to-lime-900 text-white flex items-center space-x-2">
+						<div class="w-2 h-2 rounded-full bg-lime-300 animate-pulse"></div>
+						<span id="mirrorSite">Stake.com</span>
+					</div>
+				</div>
+			</div>
+		</header>
+   
+		<main id="mainContent" class="bg-gray-950 p-6 gap-6 shadow-[0px_0px_0px_rgba(0,_0,_0,_1),_0_10px_20px_rgba(0,_0,_0,_1)] rounded-2xl max-w-4xl mx-auto min-h-auto md:grid grid-cols-2 space-y-3 grid-flow-row transition-all duration-300">
+        <!-- Left Column -->
 
-        .container {
-            max-width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin: 0;
-            color: var(--tg-theme-text-color);
-        }
-
-        .card {
-            background-color: var(--tg-theme-secondary-bg-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            border-radius: 10px;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            margin: 8px 0;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .btn:active {
-            opacity: 0.8;
-        }
-
-        .btn-secondary {
-            background-color: var(--tg-theme-secondary-bg-color);
-            color: var(--tg-theme-text-color);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 16px;
-            background-color: var(--tg-theme-secondary-bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .user-details {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 4px;
-        }
-
-        .user-id {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-        }
-
-        .feature-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .feature-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .feature-item:last-child {
-            border-bottom: none;
-        }
-
-        .feature-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            background-color: var(--tg-theme-button-color);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--tg-theme-button-text-color);
-        }
-
-        .theme-switcher {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-
-        .theme-btn {
-            flex: 1;
-            margin: 0 5px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .url-input-container {
-            margin: 0 auto 15px;
-            width: 100%;
-        }
-
-        #url-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--tg-theme-hint-color);
-            background: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            font-size: 16px;
-        }
-
-        .iframe-container {
-            width: 100%;
-            height: 300px;
-            margin: 20px auto;
-            background-color: var(--tg-theme-secondary-bg-color);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        
-        .iframe-error {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--tg-theme-secondary-bg-color);
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .iframe-error p {
-            margin-bottom: 15px;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --tg-theme-bg-color: #212121;
-                --tg-theme-text-color: #ffffff;
-                --tg-theme-hint-color: #aaaaaa;
-                --tg-theme-link-color: #5d9cec;
-                --tg-theme-button-color: #5d9cec;
-                --tg-theme-button-text-color: #ffffff;
-                --tg-theme-secondary-bg-color: #2d2d2d;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Telegram Mini App</h1>
-        </header>
-
-        <div class="card">
-            <div class="user-info">
-                <div class="avatar">
-                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ded32c51-079d-44fa-aa32-dba978dfed35.png" alt="User profile picture showing abstract avatar with Telegram colors" />
+            <!-- Account Section -->
+            <section id="user-Login" class =' col-span-2' >
+                <div class="flex justify-between items-center gap-3">
+						<div id="accountInfo" class="hidden flex justify-between items-center gap-3 space-y-2">
+							<p class="text-base font-semibold  flex items-center gap-1">
+								<span class="material-icons text-white ">account_circle</span>	
+								<span id="user-name" class='text-lime-300 items-center '>Username123</span>	
+							</p>
+							<p class="text-xs text-white flex items-center gap-1">
+								<span>Vip: </span><span class="" id="user-vip"></span>
+							</p>
+							<p class="text-xs sm:text-xs text-gray-400 flex items-center gap-1">
+								<span>Progress: </span><span class="" id="ticket-wager"></span>
+							</p>
+							<p class="text-xs sm:text-xs text-gray-400 flex items-center gap-1">
+								<span>Ticket: </span><span class="" id="ticket-count"></span>
+							</p>
+						</div>
+						<input type="text" id="apiKey" placeholder="Enter API Key" class="basis-full rounded-md bg-gray-900 text-white font-mono text-xs px-2 py-1 outline-none" required ></input>
+						<div class="flex justify-between items-center">
+							<label for="game-select" class=" font-semibold items-center">Game</label>
+							<select id="game-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+									<option class="mr-2" value="dice" >DICE</option>
+									<option class="mr-2" value="limbo" >LIMBO</option>
+									<option class="mr-2" value="mines" >MINES</option>
+									<option class="mr-2" value="keno" >KENO</option>
+							</select>
+							
+						</div>	
+						<button id="apikey-btn" class="material-icons bg-lime-300 rounded-xl px-2 py-1 font-semibold text-gray-950 text-xs hover:bg-lime-300/75 cursor-pointer transition">login</button>
                 </div>
-                <div class="user-details">
-                    <div class="user-name" id="user-name">Loading...</div>
-                    <div class="user-id" id="user-id">ID: loading...</div>
-                </div>
-            </div>
-        </div>
+                <p id="apikey-msg" class="text-red-600 hidden mt-2 text-xs text-center"></p>
 
-        <div class="card">
-            <h2>App Features</h2>
-            <ul class="feature-list">
-                <li class="feature-item">
-                    <div class="feature-icon">1</div>
-                    <span>Built with Telegram WebApp SDK</span>
-                </li>
-                <li class="feature-item">
-                    <div class="feature-icon">2</div>
-                    <span>Supports themes</span>
-                </li>
-                <li class="feature-item">
-                    <div class="feature-icon">3</div>
-                    <span>Access to user data</span>
-                </li>
-                <li class="feature-item">
-                    <div class="feature-icon">4</div>
-                    <span>Backend communication</span>
-                </li>
-            </ul>
-        </div>
+            </section>
 
-        <div class="card">
-            <h2>Theme Settings</h2>
-            <div class="theme-switcher">
-                <button class="btn theme-btn" id="light-theme">Light</button>
-                <button class="btn theme-btn" id="dark-theme">Dark</button>
-                <button class="btn theme-btn" id="system-theme">System</button>
-            </div>
-        </div>
+			<!-- Stats Section -->
+			<section id='stats-bot' class= 'border border-lime-300/75 rounded-lg'>
+			 <div class="flex justify-between text-xs items-center">
+                    <button class="rounded-tl-lg basis-full  border-b tab-button px-2 py-1 text-gray-950 bg-lime-300 cursor-pointer transition hover:border-b-2 hover:border-gray-300 hover:text-gray-700" data-tab="account-stats">
+                        Account Stats
+                    </button>
+                    <button class="basis-full  border-b tab-button px-2 py-1 text-lime-300 cursor-pointer  transition hover:border-b-2  hover:border-gray-300 hover:text-gray-700" data-tab="game-stats">
+                        Game Stats
+                    </button>
+					<button class="rounded-tr-lg basis-full  border-b tab-button px-2 py-1 text-lime-300 cursor-pointer transition hover:border-b-2  hover:border-gray-300 hover:text-gray-700" data-tab="high-stats">
+                        Highest Stats
+                    </button>
+			</div>
+			<div class="tab-content " id="account-stats">
+				<div class="grid grid-cols-2 py-1">
+					<div class="flex justify-between px-2 py-1 ">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">account_balance_wallet</span>
+							<span class="text-xs">Balance</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<p class="font-bold text-xs" id="Balance">0.00000000 BTC</p>
+							<p class="" id="BalancePercent"></p>
+						</div>
+					</div> 
+					
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1 ">
+							<span class="material-icons text-lime-300 text-xs">show_chart</span>
+							<span class="text-xs">Profit</span>
+						</div>
+						<div class="flex md:flex-col items-center md:justify-end gap-1 ">
+							<p class="font-bold text-xs" id="Profit">0.00000000 BTC</p>
+							<p class="text-xs bg-lime-300/20 text-center text-lime-300 px-1 rounded-full" id="ProfitPercent">0.00%</p>
+						</div>
+					</div> 
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1 ">
+							<span class="material-icons text-lime-300 text-xs">equalizer</span>
+							<span class="text-xs">Partial</span>
+						</div>
+						<div class="flex md:flex-col items-center md:justify-end gap-1 ">
+							<p class="font-bold text-xs" id="Partial">0.00000000 BTC</p>
+							<p class="text-xs bg-lime-300/20 text-lime-300 px-1 rounded-full" id="PartialPercent">0.00%</p>
+						</div>
+					</div> 
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">Wagered</span>
+						</div>
+						<div class="flex md:flex-col items-center md:justify-end gap-1 ">
+							<p class="font-bold text-xs" id="Wagered">0.00000000 BTC</p>
+							<p class="text-xs bg-lime-300/20 text-lime-300 px-1 rounded-full" id="WageredPercent">0.00%</p>
+						</div>
+					</div> 
+				</div>
+			</div>
+			<div class="hidden tab-content" id="game-stats">
+				<div class="grid grid-cols-2 sm:grid-cols-2 py-1">
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">Bet</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="total-bet">0</span>
+						</div>
+					</div> 
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">Streak</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="total-streak">0</span>
+						</div>
+					</div> 						
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">Wins</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs text-lime-300" id="total-wins">0</span>
+							<span class="text-xs bg-lime-300/20 text-lime-300 px-1 rounded-full" id="rate-wins">0.00%</span>
+						</div>
+					</div>
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">Losses</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs text-red-600" id="total-losses">0</span>
+							<span class="text-xs bg-lime-300/20 text-lime-300 px-1 rounded-full" id="rate-losses">0.00%</span>
+						</div>
+					</div> 			
+					
+				</div> 
+			</div>
+			<div class="hidden tab-content" id="high-stats">
+				<div class="grid grid-cols-2 sm:grid-cols-2 py-1">
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">H Payout</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="high-payout">0</span>
+						</div>
+					</div> 
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">H Bet</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="high-bet">0.00000000 BTC</span>
+						</div>
+					</div> 						
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">H Win</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="high-wins">0.00000000 BTC</span>
+						</div>
+					</div>
+					<div class="flex justify-between rounded-lg px-2 py-1">
+						 <div class="flex items-center gap-1">
+							<span class="material-icons text-lime-300 text-xs">casino</span>
+							<span class="text-xs">H Lose</span>
+						</div>
+						<div class="flex items-center gap-1 ">
+							<span class="font-bold text-xs" id="high-losses">0.00000000 BTC</span>
+						</div>
+					</div> 			
+					
+				</div> 
+			</div>
+		
+			</section>
+	            <!-- Bot Control Section -->
+			<section class="grid grid-cols-2 justify-between text-base border border-lime-300 p-3 rounded-lg gap-3">
 
-        <div class="card">
-            <h2>Web Page Loader</h2>
-            <div class="url-input-container">
-                <input type="url" id="url-input" placeholder="Enter URL (e.g. https://example.com)">
-            </div>
-            <div class="iframe-container" id="iframe-container">
-                <iframe src="about:blank" frameborder="0" allowfullscreen></iframe>
-                <div class="iframe-error hidden" id="iframe-error">
-                    <p>Could not load page. Try opening in browser instead.</p>
-                    <button class="btn btn-secondary" id="open-in-browser">Open in Browser</button>
-                </div>
-            </div>
-            <button class="btn" id="launch-url">Load URL</button>
-        </div>
-
-        <button class="btn" id="send-data">Send Data to Bot</button>
-        <button class="btn btn-secondary" id="close-app">Close App</button>
-    </div>
-
-    <script>
-        // Initialize Telegram WebApp
-        const tg = window.Telegram.WebApp;
-
-        // Expand the app to full view
-        tg.expand();
-
-        // Get user data
-        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        const userName = user ? (user.first_name || 'Anonymous') : 'Anonymous';
-        const userId = user ? (user.id || 'N/A') : 'N/A';
-        document.getElementById('user-name').textContent = userName;
-        document.getElementById('user-id').textContent = `ID: ${userId}`;
-
-        // Theme buttons functionality
-        document.getElementById('light-theme').addEventListener('click', () => {
-            tg.setHeaderColor('bg_color');
-            tg.setBackgroundColor('#ffffff');
-            tg.enableClosingConfirmation();
-        });
-
-        document.getElementById('dark-theme').addEventListener('click', () => {
-            tg.setHeaderColor('secondary_bg_color');
-            tg.setBackgroundColor('#212121');
-            tg.enableClosingConfirmation();
-        });
-
-        document.getElementById('system-theme').addEventListener('click', () => {
-            tg.setHeaderColor('bg_color');
-            tg.setBackgroundColor();
-            tg.disableClosingConfirmation();
-        });
-
-        // Close app button
-        document.getElementById('close-app').addEventListener('click', () => {
-            tg.close();
-        });
-
-        // Send data to bot
-        document.getElementById('send-data').addEventListener('click', () => {
-            const data = {};
-            if (user) {
-                data.user_id = user.id;
-                data.first_name = user.first_name;
-                data.last_name = user.last_name;
-                data.username = user.username;
-                data.language_code = user.language_code;
-                data.is_premium = user.is_premium;
-            }
-            data.query_id = tg.initDataUnsafe ? tg.initDataUnsafe.query_id : null;
+				<div class="flex justify-between items-center">
+                       	<label for="currency-select" class="font-semibold items-center">Currency</label>
+						<select id="currency-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+						</select>
+                </div>	
+				<div class="flex justify-between items-center">
+						<label for="game-select" class=" font-semibold items-center">Game</label>
+						<select id="game-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+								<option class="mr-2" value="dice" >DICE</option>
+								<option class="mr-2" value="limbo" >LIMBO</option>
+								<option class="mr-2" value="mines" >MINES</option>
+								<option class="mr-2" value="keno" >KENO</option>
+						</select>
+						
+				</div>	
+				<div class="flex justify-between items-center">
+					<label for="risk-select" class="font-semibold items-center">Risk Level</label>
+					<select id="risk-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+							<option class="mr-2" value="classic" >CLASSIC</option>
+							<option class="mr-2" value="low" >LOW</option>
+							<option class="mr-2" value="medium" >MEDIUM</option>
+							<option class="mr-2" value="high" >HIGH</option>
+					</select>
+				</div>
+				<div class="flex justify-between items-center">
+					<label for="mines-select" class="font-semibold items-center">Mines</label>
+					<select id="mines-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+					</select>
+				</div>
+				<div class="flex justify-between items-center">
+					<label for="max-select" class="font-semibold items-center">Picked</label>
+					<select id="max-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+					</select>
+				</div>
+				<div id='randomize-section'>
+						<label class="flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+							<span class="text-sm">Random Pick Each Bet</span>
+							<input id= 'autoPick-check' type="checkbox" value="" class="sr-only peer">
+							<div class="relative w-9 h-5 bg-gray-800 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-lime-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-lime-300"></div>
+						</label>
+					</div>			
+				<div id= 'option-randomizer' class="hidden flex grid grid-cols-2 justify-between gap-1 mx-4">
+					<label class="px-4 flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+						<input type="checkbox" name="randomizer" value="generateLCG" id="rand-Linear" class="peer hidden" checked>
+						<span class="text-xs">Linear Congruential</span>
+						<span class="w-2 h-2 border border-lime-300 rounded flex items-center justify-center peer-checked:bg-lime-300"></span>
+					</label>
+					<label class="px-4 flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+						<input type="checkbox" name="randomizer" value="generateFisherYates" id="rand-Fisher" class="peer hidden">
+						<span class="text-xs">Fisher-Yates</span>
+						<span class="w-2 h-2 border border-lime-300 rounded flex items-center justify-center peer-checked:bg-lime-300"></span>
+					</label>
+					<label class="px-4 flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+						<input type="checkbox" name="randomizer" value="generateGaussian" id="rand-Gaussian" class="peer hidden">
+						<span class="text-xs">Gaussian</span>
+						<span class="w-2 h-2 border border-lime-300 rounded flex items-center justify-center peer-checked:bg-lime-300"></span>
+					</label>
+					<label class="px-4 flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+						<input type="checkbox" name="randomizer" value="generateBinaryFind" id="rand-BinaryFind" class="peer hidden">
+						<span class="text-xs">BinaryFind</span>
+						<span class="w-2 h-2 border border-lime-300 rounded flex items-center justify-center peer-checked:bg-lime-300"></span>
+					</label>
+					<label class="px-4 flex items-center justify-between gap-1 cursor-pointer transition hover:text-lime-300">
+						<input type="checkbox" name="randomizer" value="generateHotsNumber" id="rand-HotsNumber" class="peer hidden">
+						<span class="text-xs">HotsNumber</span>
+						<span class="w-2 h-2 border border-lime-300 rounded flex items-center justify-center peer-checked:bg-lime-300"></span>
+					</label>
+				</div>
+			
+			</section>
+   
+			<section id='chart-section col-span-2'>
+				<div class="flex justify-between text-xs items-center border-b border-lime-300 mb-3">
+					<div class="flex justify-right gap-3">
+						<button class="Game-button text-base font-semibold items-center cursor-pointer transition hover:text-gray-700"target="Game-view">Game View</button>
+						<button class="Game-button text-lime-300 text-base font-semibold items-center cursor-pointer transition hover:text-gray-700" target="Game-chart">Chart</button>
+						<button class="Game-button text-base font-semibold items-center cursor-pointer transition hover:text-gray-700"target="Game-history">History</button>
+					</div>
+					<button class="content-button px-2 py-1 text-lime-300 cursor-pointer transition hover:text-gray-700" target="Game-content">Hide</button>
+				</div>
+				<div id="Game-content">
+					<div id='Game-view' class="hidden Game-content space-y-3">	
+								<button id="auto-pick-btn" class="hidden px-2 py-1 bg-gray-800 rounded-full py-1 text-xs text-lime-300 cursor-pointer transition hover:border-gray-300 hover:text-gray-700" >	AutoPick</button>
+								<button id="clear-table-btn" class="hidden px-2 bg-gray-800 rounded-full py-1 text-xs text-lime-300 cursor-pointer transition hover:border-gray-300 hover:text-gray-700" >Clear</button>
+						<div id='numberBox-section'>					
+							<div class="relative ">
+									<div class="flex items-center justify-center " >
+									<div class="" id="number-grid">
+										<!-- Numbers will be generated by JS -->
+									</div>
+									</div>
+									<div id="payoutShow" class="hidden absolute inset-0 flex justify-center items-center rounded-xl">
+										<div id="payoutAmount" class="bg-gray-900 max-w-1/8 min-w-1/8 aspect-[1/1] border flex justify-center items-center font-bold text-base rounded-lg shadow-lg">
+											1.60×
+										</div>
+									</div>
+							</div>
+						</div>
+					</div>
+					<div id='Game-chart' class="Game-content space-y-3 overflow-auto aspect-[8/5]">	
+					<canvas id="bet-chart" class="basis-full" ></canvas>
+					</div>
+					<div id= "Game-history" class="hidden Game-content items-center rounded-lg shadow-md flex justify-between outline-none overflow-auto  aspect-[8/5]">
+						<table >
+							<thead>
+								<tr>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Date</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Amount</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Payout</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Profit</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Game</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Target</th>
+									<th class="px-2 py-1 text-center text-xs font-medium text-lime-300 uppercase tracking-wider">Result</th>
+								</tr>
+							</thead>
+							<tbody id="tableBody" class="basis-full ">
+								<!-- Table rows will be added here dynamically -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</section>
+       
             
-            tg.sendData(JSON.stringify(data));
-        });
+            <!-- Lua Code Editor -->
+            <section class="flex flex-col w-full ">
+			<div class="flex justify-between text-xs items-center border-b border-lime-300 mb-3">
+				<div class="flex justify-right gap-3">
+					<button class="lua-button text-base text-lime-300 font-semibold items-center cursor-pointer transition hover:text-gray-700" target="lua-code">Lua</button>
+					<button class="lua-button text-base font-semibold items-center cursor-pointer transition hover:text-gray-700"target="lua-console">Console</button>
+					<button class="lua-button text-base font-semibold items-center cursor-pointer transition hover:text-gray-700"target="lua-variable">Variable</button>
+					<button class="lua-button text-base font-semibold items-center cursor-pointer transition hover:text-gray-700"target="lua-function">Function</button>
+				</div>
+				<button class="content-button px-2 py-1 text-lime-300 cursor-pointer transition hover:text-gray-700" target="lua-content">Hide</button>
+			</div>
+			
+			<div id="lua-content">
+			
+				<div id= "lua-code" class="lua-content flex flex-col w-full aspect-[8/5]">
+                <textarea id="luaCode" class="flex-1 bg-lime-300 text-gray-950 font-mono text-xs p-3 rounded-md outline-none resize-none min-h-80 sm:min-h-1" placeholder="Paste your Lua code here...">-- Example Lua code
+playgame = "dice"
+basebet = 0.0001
+iflose  = 1.28
+nextbet = basebet
+fields = {0,1,2,3,4,5,6,7,8,9}
+risk = "medium"
+mines = 3
+chance = 75
+function dobet()
+    if(win)then
+		nextbet = basebet
+	else
+		nextbet = previousbet * iflose
+	end
+end
+</textarea>
+				</div>
+				
+				<div id="lua-console" class="lua-content hidden w-full aspect-[8/5] overflow-y-auto bg-lime-300/10 p-4 font-mono text-xs border border-lime-300 rounded-md">
+				</div>
+				<div id="lua-variable" class="hidden lua-content flex flex-col w-full aspect-[8/5] bg-lime-300 text-gray-950 font-mono text-xs p-3 rounded-md">
+					<pre>bethigh : Bet side for dice </pre>
+					<pre>chance  : target for dice and limbo </pre>
+					<pre>fields  : target for keno and mines </pre>
+					<pre>mines   : bombs of mines </pre>
+					<pre>picked  : for use random pick</pre>
+					<pre>
+					</pre>	
+	
+					<pre>nextbet : amount bet for next game </pre>
+					<pre>currency : currency</pre>
+					<pre>balance : amount of current balance </pre>
+					<pre>profit : amount profit in session</pre>
+					<pre>wagered : amount wagered in session</pre>
+					<pre>partialprofit : partial of profit ( autoreset )</pre>
+					<pre>
+					</pre>	
+					<pre>win : state win or lose </pre>
+					<pre>bets : total bets in session</pre>
+					<pre>wins : total win in session</pre>
+					<pre>winstreak  : longest win streak in session</pre>
+					<pre>losses :  total of lose in session</pre>
+					<pre>losestreak : longest lose streak in session</pre>
+					<pre>currentstreak : streak progress (negative for loses)</pre>
+					<pre>
+					</pre>					
+					<pre>lastBet.amount, previousbet : Amount in previous game</pre>
+					<pre>lastBet.roll :  Result number in previous game</pre>
+					<pre>lastBet.target : target previouse game </pre>
+					<pre>lastBet.profit, currentprofit : Profit in previous game</pre>
 
-        // Launch URL in iframe
-        document.getElementById('launch-url').addEventListener('click', () => {
-            const urlInput = document.getElementById('url-input');
-            const iframeContainer = document.getElementById('iframe-container');
-            const iframe = iframeContainer.querySelector('iframe');
-            
-            if (!urlInput.value) {
-                tg.showAlert('Please enter a URL first');
-                return;
-            }
-            
-            try {
-                const url = new URL(urlInput.value);
-                const errorDisplay = document.getElementById('iframe-error');
-                errorDisplay.classList.add('hidden');
-                
-                iframe.onload = function() {
-                    errorDisplay.classList.add('hidden');
-                };
-                
-                iframe.onerror = function() {
-                    errorDisplay.classList.remove('hidden');
-                    tg.showAlert('Could not load page in iframe');
-                };
-                
-                iframe.src = url.toString();
-                
-                // Store URL for browser fallback
-                document.getElementById('open-in-browser').onclick = () => {
-                    window.open(url.toString(), '_blank');
-                };
-                
-            } catch (e) {
-                tg.showAlert('Invalid URL format. Please include http:// or https://');
-            }
-        });
+			  </div>
+				<div id="lua-function" class="hidden lua-content flex flex-col w-full aspect-[8/5] bg-lime-300 text-gray-950 font-mono text-xs p-3 rounded-md">
+					<pre>dobet() : Main function for betting</pre>
+					<pre>stop() : Stop betting</pre>
+					<pre>resume() : Resume betting with current params</pre>
+					<pre>resetseed() : Reset fairness</pre>
+					<pre>resetstats() : Reset statistics</pre>
+					<pre>resetchart() : Reset chart</pre>
+					<pre>resetlog() : Reset log</pre>
+					
+					<pre>resetall() : Reset time, statistics, chart, history, log</pre>
+					<pre>checkbalance() : Check actual balance</pre>
+					<pre>ching() : Alert with sound</pre>
+					<pre>log(message) : Write a message in Log area</pre>
+					<pre>sleep(sec) : Pause betting system with sec</pre>
+					<pre>resetpartialprofit() : Reset partialprofit</pre>
+				</div>
+			</div>
+            </section>
+			<section class="space">
+			 </section>
+			<section class="flex flex-col w-full ">
+					<p id="bet-msg" class="text-red-600 text-xs text-center mb-4 hidden">Error message</p>
+				<div class="flex justify-between grid grid-cols-2 gap-1 ">
+                    <button id="start-btn" class="bg-gray-950 text-lime-300 border border-lime-300 rounded-md py-1 font-semibold text-gray-950 hover:bg-lime-300 hover:text-gray-950 transition">
+                        Start
+                    </button>
+                    <button id="stop-btn" class="bg-red-600 rounded-md py-1 font-semibold text-white hover:bg-red-600 transition hidden">
+                        Stop
+                    </button>
+                    <button id="pause-btn" class="bg-gray-900 rounded-md py-1 font-semibold text-white hover:bg-gray-800 transition hidden">
+                        Pause
+                    </button>
+                    <button id="resume-btn" class="bg-gray-900 rounded-md py-1 font-semibold text-white hover:bg-gray-800 transition hidden">
+                        Resume
+                    </button>
+				</div>
+				
+			</section>
 
-        // Handle theme changes
-        tg.onEvent('themeChanged', () => {
-            document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
-            document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#707579');
-            document.documentElement.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#3390ec');
-            document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#3390ec');
-            document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f4f4f5');
-        });
-
-        // Main button setup
-        tg.MainButton.setParams({
-            text: 'OPEN IN BROWSER',
-            color: tg.themeParams.button_color,
-            text_color: tg.themeParams.button_text_color,
-            is_active: true,
-            is_visible: true
-        });
-
-        tg.MainButton.onClick(() => {
-            window.open('https://core.telegram.org/bots/webapps', '_blank');
-        });
-    </script>
-</body>
+		</main>
+	<footer class="flex-none py-8">
+		<div class="mx-auto flex flex-col items-center justify-center md:flex-row w-full">
+			<p class="mt-2 text-xs font-bold text-gray-950 md:mt-0">Copyright © <!-- -->2025<!-- --> FvckinBot™. All rights reserved.</p>
+			</div>
+	</footer>
+		<script src="script.js"></script>				
+	</body>
 </html>
-
