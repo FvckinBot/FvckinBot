@@ -24,7 +24,7 @@
 				<div class="relative">
 					<div class="site-badge px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-gray-950-900 to-lime-900 text-white flex items-center space-x-2">
 						<div class="w-2 h-2 rounded-full bg-lime-300 animate-pulse"></div>
-						<span id="mirrorSite">Stake.com</span>
+						<span id="mirrorSite"></span>
 					</div>
 				</div>
 			</div>
@@ -52,16 +52,13 @@
 							</p>
 						</div>
 						<input type="text" id="apiKey" placeholder="Enter API Key" class="basis-full rounded-md bg-gray-900 text-white font-mono text-xs px-2 py-1 outline-none" required ></input>
-						<div class="flex justify-between items-center">
-							<label for="game-select" class=" font-semibold items-center">Game</label>
-							<select id="game-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
-									<option class="mr-2" value="dice" >DICE</option>
-									<option class="mr-2" value="limbo" >LIMBO</option>
-									<option class="mr-2" value="mines" >MINES</option>
-									<option class="mr-2" value="keno" >KENO</option>
+							<select id="mirror-select"  class="bg-lime-300 hover:bg-lime-300/75 text-xs text-gray-950 font-bold py-1 px-1 rounded-md focus:outline-none transition-colors duration-200 cursor-pointer">
+									<option class="mr-2" value="stake.com" >stake.com</option>
+									<option class="mr-2" value="stake.bet" >stake.bet</option>
+									<option class="mr-2" value="stake.ac" >stake.ac</option>
+									<option class="mr-2" value="stake.jp" >stake.jp</option>
+									<option class="mr-2" value="stake.mg" >stake.mg</option>
 							</select>
-							
-						</div>	
 						<button id="apikey-btn" class="material-icons bg-lime-300 rounded-xl px-2 py-1 font-semibold text-gray-950 text-xs hover:bg-lime-300/75 cursor-pointer transition">login</button>
                 </div>
                 <p id="apikey-msg" class="text-red-600 hidden mt-2 text-xs text-center"></p>
